@@ -1,7 +1,8 @@
-versioning
-==========
+# collibra-gradle-versioning-plugin
 
-Gradle plug-in to generate version information from the SCM branch.
+This project provides the `com.collibra.gradle.plugins.versioning` gradle plugin, it was forked
+from [nemerosa/versioning](https://github.com/nemerosa/versioning) version `3.1.0` and modified to
+suit Collibra's needs (including the removal of SVN support and all of the svnkit transitive dependencies).
 
 ## Use cases
 
@@ -12,9 +13,9 @@ Given a simple release workflow:
 We get the version information from the branch in two flavours:
 
 * the _full_ version, which is normalised branch name, followed by the short commit hash
-* the _display_ version, which can be used to display the version to an end user, and is computed differently on a `feature/*` or `master` branch than on a `release/*` branch.
+* the _display_ version, which can be used to display the version to an end user, and is computed differently on a `feature/*` or `main` branch than on a `release/*` branch.
 
-The computed project's _display_ version on the `feature/*` and `master` branches is the _base_ version (the normalised branch name without the prefix) and the abbreviated commit hash (or _build_ version). For `release/*` branches, the version is computed according the latest tag on the branch, allowing for automatic patch number.
+The computed project's _display_ version on the `feature/*` and `main` branches is the _base_ version (the normalised branch name without the prefix) and the abbreviated commit hash (or _build_ version). For `release/*` branches, the version is computed according the latest tag on the branch, allowing for automatic patch number.
 
 To achieve such a configuration, just configure the `versioning` plug-in the following way and follow strict conventions for your branch names:
 
@@ -29,41 +30,16 @@ allprojects {
 
 ## Applying the plug-in
 
-The `versioning` plug-in is hosted in [JCenter](https://bintray.com/bintray/jcenter) and is registered in the [Gradle Plug-in Portal](https://plugins.gradle.org/).
-
-### Gradle 2.1 and higher
-
 ```groovy
 
 plugins {
-   id 'net.nemerosa.versioning' version '2.8.2'
+   id 'com.collibra.gradle.plugins.versioning' version 'x.x.x'
 }
 ```
-
-### Gradle 1.x and 2.0
-
-```groovy
-buildscript {
-   repositories {
-      maven {
-         url "https://plugins.gradle.org/m2/"
-       }
-   }
-   dependencies {
-      classpath 'net.nemerosa:versioning:2.8.2'
-   }
-}
-
-apply plugin: 'net.nemerosa.versioning'
-```
-
-## Change log
-
-Change log is available in the [Wiki](https://github.com/nemerosa/versioning/wiki).
 
 ## Using the versioning info
 
-For example, to set the project's _full_ version using the SCM:
+For example, to set the project's _full_ version using the git version:
 
 ```groovy
 version = versioning.info.full
@@ -83,39 +59,38 @@ Once the `versioning` plug-in has been applied, a `versioning` extension is avai
 
 Getting the read-only `ìnfo` provides access to the following information, computed from the SCM information:
 
-Property | Description | Git: `master` | Git: `feature/great` | Git: `release/2.0`
----|---|---|---|---
-`scm` | SCM source | `git` | `git` | `git`
-`branch` | Branch name | `master` | `feature/great` | `release/2.0`
-`branchType` | Type of branch | `master` | `feature` | `release`
-`branchId` | Branch as an identifier | `master` | `feature-great` | `release-2.0`
+Property | Description | Git: `main`                                | Git: `feature/great`                       | Git: `release/2.0`
+---|---|--------------------------------------------|--------------------------------------------|---
+`scm` | SCM source | `git`                                      | `git`                                      | `git`
+`branch` | Branch name | `main`                                     | `feature/great`                            | `release/2.0`
+`branchType` | Type of branch | `main`                                     | `feature`                                  | `release`
+`branchId` | Branch as an identifier | `main`                                     | `feature-great`                            | `release-2.0`
 `commit` | Full commit hash | `09ef6297deb065f14704f9987301ee6620493f70` | `09ef6297deb065f14704f9987301ee6620493f70` | `09ef6297deb065f14704f9987301ee6620493f70`
-`build` | Short commit/revision indicator, suitable for a build number | `09ef629` | `09ef629` | `09ef629`
-`full` | Branch ID and build | `master-09ef629` | `feature-great-09ef629` | `release-2.0-09ef629`
-`base` | Base version for the display version | `` | `great` | `2.0`
-`gradle` | Project's version |  |  | 
-`display` | Display version | `master` | `great` | `2.0.0`, `2.0.1`, ...
-`tag` (1) | Current tag | (2) | (2) | (2)
-`lastTag` (1) | Last tag | (4) | (4) | (4)
-`dirty` | Current state of the working copy | (3) | (3) | (3)
-`versionNumber` | Version number containing major, minor, patch, qualifier and versionCode |  |  |  
-`versionNumber.major` | Major version | 0 | 0 |  2
-`versionNumber.minor` | Minor version | 0 | 0 |  0
-`versionNumber.patch` | Patch version | 0 | 0 |  0, 1, 2, ...
-`versionNumber.qualifier` | Version qualifier (alpha, beta, engineer, ...)| '' | '' | '' 
-`versionNumber.versionCode` | Version code | 0 | 0 |  20000, 20001, 20002, ...
-`time` | Timestamp of the current commit | (5) | (5) | (5)
+`build` | Short commit/revision indicator, suitable for a build number | `09ef629`                                  | `09ef629`                                  | `09ef629`
+`full` | Branch ID and build | `main-09ef629`                             | `feature-great-09ef629`                    | `release-2.0-09ef629`
+`base` | Base version for the display version | ``                                         | `great`                                    | `2.0`
+`gradle` | Project's version |                                            |                                            | 
+`display` | Display version | `main`                                     | `great`                                    | `2.0.0`, `2.0.1`, ...
+`tag` | Current tag | (1)                                        | (1)                                        | (1)
+`lastTag` (1) | Last tag | (3)                                        | (3)                                        | (3)
+`dirty` | Current state of the working copy | (2)                                        | (2)                                        | (2)
+`versionNumber` | Version number containing major, minor, patch, qualifier and versionCode |                                            |                                            |  
+`versionNumber.major` | Major version | 0                                          | 0                                          |  2
+`versionNumber.minor` | Minor version | 0                                          | 0                                          |  0
+`versionNumber.patch` | Patch version | 0                                          | 0                                          |  0, 1, 2, ...
+`versionNumber.qualifier` | Version qualifier (alpha, beta, engineer, ...)| ''                                         | ''                                         | '' 
+`versionNumber.versionCode` | Version code | 0                                          | 0                                          |  20000, 20001, 20002, ...
+`time` | Timestamp of the current commit | (4)                                        | (4)                                        | (4)
 
-(1) not supported for Subversion
-(2) will be the name of the current tag if any, or `null` if no tag is associated to the current `HEAD`.
-(3) depends on the state of the working copy the plug-in is applied to. `true` if the working copy contains uncommitted
+* (1) will be the name of the current tag if any, or `null` if no tag is associated to the current `HEAD`.
+* (2) depends on the state of the working copy the plug-in is applied to. `true` if the working copy contains uncommitted
 files.
-(4) Name of the last tag on the branch. It can be on the current `HEAD` but not
+* (3) Name of the last tag on the branch. It can be on the current `HEAD` but not
 necessarily - it will be `null` if no previous tag can be found. The last tags are
 matched against the `lastTagPattern` regular expression defined in the configuration. It
 defaults to `(\d+)$`, meaning that we just expect a sequence a digits at the end
 of the tag name.
-(5) will be the timestamp of the current commit, or `null` if no timestamp is associated with it
+* (4) will be the timestamp of the current commit, or `null` if no timestamp is associated with it
 
 ### Display version
 
@@ -226,20 +201,14 @@ The default properties are shown below:
 ```groovy
 versioning {
    /**
-    * Defines the SCM to use in order to collect information.
-    *
-    * At the moment, only Git (git) and Subversion (svn) are supported.
-    */
-   scm = 'git'
-   /**
     * Computation of the release type and the base, by parsing the scm info.
     * By default, we use "/" as a separator in branch name between the type and the base. If not
     * present, the type is the branch and the base is empty.
     * F.e. if you want use tag name instead of branch you may provide something like:
     */
-    releaseParser = { scmInfo, separator = '/' ->
-        List<String> part = scmInfo.tag.split('/') + ''
-        new net.nemerosa.versioning.ReleaseInfo(type: part[0], base: part[1])
+    releaseParser = { gitInfo, separator = '/' ->
+        List<String> part = gitInfo.tag.split('/') + ''
+        new com.collibra.gradle.plugins.versioning.ReleaseInfo(part[0], part[1])
     }
     /**
      * Fetch branch name from environment variables. Useful when using CI like
@@ -249,7 +218,7 @@ versioning {
     /**
      * Computation of the full version
      */
-    full = { scmInfo -> "${scmInfo.branch}-${scmInfo.abbreviated}" }
+    full = { gitInfo -> "${gitInfo.branch}-${gitInfo.abbreviated}" }
     /**
      * Set of eligible branch types for computing a display version from the branch base name
      */
@@ -455,7 +424,7 @@ versioning {
     /**
      * Compute version number
      *
-     * Closure that compute VersionNumber from <i>scmInfo</i>, <i>versionReleaseType</i>, <i>versionBranchId</i>,
+     * Closure that compute VersionNumber from <i>gitInfo</i>, <i>versionReleaseType</i>, <i>versionBranchId</i>,
      * <i>versionFull</i>, <i>versionBase</i> and <i>versionDisplay</i>
      *
      * By default it tries to find this pattern in display : '([0-9]+)[.]([0-9]+)[.]([0-9]+)(.*)$'.
@@ -475,7 +444,7 @@ versioning {
      * 10.55.62 -> 100055062
      * 20.3.2 -> 20003002
      **/
-    Closure<VersionNumber> parseVersionNumber = { SCMInfo scmInfo, String versionReleaseType, String versionBranchId,
+    Closure<VersionNumber> parseVersionNumber = { SCMInfo gitInfo, String versionReleaseType, String versionBranchId,
                                                   String versionFull, String versionBase, String versionDisplay ->
         // We are specifying all these parameters because we want to leave the choice to the developer
         // to use data that's right to him
@@ -561,60 +530,3 @@ versioning {
     gitRepoRootDir = '/path/to/other/directory'
 }
 ```
-
-## Subversion support
-
-Subversion is supported starting from version `1.1.0` of the Versioning plug-in. In order to enable your working copy
-to work with Subversion, set `scm` to `svn`:
-
-```groovy
-versioning {
-   scm = 'svn'
-}
-```
-
-The branches are read from under the `branches/` folder, and the branch type is parsed
-using '-' as a separator. The table below gives some examples for Subversion based branches:
-
-
-Property | Description | SVN: `trunk` @ rev 12 | SVN: `branches/feature-great` @ rev 12 | SVN: `branches/release-2.0` @ rev 12
----|---|---|---|---
-`scm` | SCM source | `svn` | `svn` | `svn`
-`branch` | Branch name | `trunk` | `feature-great` | `release-2.0`
-`branchType` | Type of branch | `trunk` | `feature` | `release`
-`branchId` | Branch as an identifier | `trunk` | `feature-great` | `release-2.0`
-`commit` | Revision | `12` | `12` | `12`
-`build` | Revision | `12` | `12` | `12`
-`full` | Branch ID and build | `master-12` | `feature-great-12` | `release-2.0-12`
-`base` | Base version for the display version | `` | `great` | `2.0`
-`display` | Display version | `trunk` | `great` | `2.0.0`, `2.0.1`, ...
-
-The rules for the display mode remain the same for Git.
-
-Collecting the version information using Subversion requires remote access to the repository. Credentials can optionally be configured using following configuration parameters:
-
-```groovy
-versioning {
-   scm = 'svn'
-   // Optional credentials
-   user = 'xxx'
-   password = 'xxx'
-}
-```
-
-> If credentials are not provided, the `versioning` plug-in will rely on the default Subversion configuration for the current user.
-
-## Release
-
-The CI and release jobs are available in the [Nemerosa Jenkins](https://jenkins.nemerosa.net/job/versioning/).
-
-See http://plugins.gradle.org/submit for the publication on the [Gradle Plug-in Portal](https://plugins.gradle.org/).
-
-## Migration from 1.x to 2.x
-
-* SVN layer is now using SVNKit for support (before, Subversion needed to be installed)
-* the `trustServerCert` option for SVN is deprecated and should be removed
-
-## Contributions
-
-Contributions are welcome - just create issues or submit pull requests.

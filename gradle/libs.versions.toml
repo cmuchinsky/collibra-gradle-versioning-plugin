@@ -1,0 +1,13 @@
+[versions]
+grgit = "5.2.2"
+mockk = "1.13.10"
+semver4j = "5.2.2"
+
+[libraries]
+grgit-core = { module = "org.ajoberstar.grgit:grgit-core", version.ref = "grgit" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+semver4j = { module = "org.semver4j:semver4j", version.ref = "semver4j" }
+
+[plugins]
+sonarqube = { id = "org.sonarqube", version = "4.4.1.3373" }
+versioning = { id = "net.nemerosa.versioning", version = "3.1.0" }
