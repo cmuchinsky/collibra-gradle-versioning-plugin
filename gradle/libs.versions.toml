@@ -1,12 +1,12 @@
 [versions]
 grgit = "5.2.2"
+jgit = "6.9.0.202403050737-r"
 mockk = "1.13.10"
-semver4j = "5.2.2"
 
 [libraries]
 grgit-core = { module = "org.ajoberstar.grgit:grgit-core", version.ref = "grgit" }
+jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version.ref = "jgit" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-semver4j = { module = "org.semver4j:semver4j", version.ref = "semver4j" }
 
 [plugins]
 sonarqube = { id = "org.sonarqube", version = "4.4.1.3373" }

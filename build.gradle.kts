@@ -3,7 +3,6 @@
 import org.sonarqube.gradle.SonarTask
 
 plugins {
-    groovy
     jacoco
     `java-gradle-plugin`
     `kotlin-dsl`
@@ -18,19 +17,21 @@ version = versioning.info.display
 
 dependencies {
     implementation(gradleApi())
-    implementation(localGroovy())
-    implementation(libs.grgit.core)
-    implementation(libs.semver4j)
+    implementation(libs.jgit)
 }
 
 testing {
     suites {
         named("test", JvmTestSuite::class) {
             useJUnitJupiter()
-            dependencies { implementation(libs.mockk) }
+            dependencies {
+                implementation(libs.grgit.core)
+                implementation(libs.mockk)
+            }
             targets.all {
                 testTask.configure {
-                    environment("GIT_TEST_BRANCH", "feature/456-cute")
+                    environment("TEST_BRANCH", "feature/456-cute")
+                    environment("BUILD_NUMBER", "12345")
                     maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
                 }
             }
@@ -56,17 +57,9 @@ publishing {
 
 gradlePlugin {
     plugins {
-        create("versioning-basic") {
-            id = "${project.group}.versioning.basic"
-            implementationClass = "com.collibra.gradle.plugins.versioning.plugins.BasicVersioningPlugin"
-        }
-        create("versioning-cloud") {
-            id = "${project.group}.versioning.cloud"
-            implementationClass = "com.collibra.gradle.plugins.versioning.plugins.CloudVersioningPlugin"
-        }
-        create("versioning-edge") {
-            id = "${project.group}.versioning.edge"
-            implementationClass = "com.collibra.gradle.plugins.versioning.plugins.EdgeVersioningPlugin"
+        create("versioning") {
+            id = "${project.group}.versioning"
+            implementationClass = "com.collibra.gradle.plugins.versioning.VersioningPlugin"
         }
     }
 }

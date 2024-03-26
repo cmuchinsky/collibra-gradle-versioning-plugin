@@ -1,6 +1,5 @@
-package com.collibra.gradle.plugins.versioning.tasks
+package com.collibra.gradle.plugins.versioning
 
-import com.collibra.gradle.plugins.versioning.VersioningExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input

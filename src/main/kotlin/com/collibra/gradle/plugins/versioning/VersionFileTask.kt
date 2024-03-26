@@ -1,4 +1,4 @@
-package com.collibra.gradle.plugins.versioning.tasks
+package com.collibra.gradle.plugins.versioning
 
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.OutputFile
